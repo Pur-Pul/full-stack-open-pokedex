@@ -2,9 +2,10 @@ name: Tests
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
+    types: [opened, synchronize]
 
 jobs:
   test:
@@ -42,3 +43,13 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+  deploy:
+    needs: [test, playwright]
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: JorgeLNJunior/render-deploy@v1.4.5
+        with:
+          service_id: ${{ secrets.RENDER_SERVICE_ID }}
+          api_key: ${{ secrets.RENDER_API_KEY }}
+          wait_deploy: true
