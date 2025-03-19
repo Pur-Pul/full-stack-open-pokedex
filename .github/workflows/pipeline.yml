@@ -7,6 +7,9 @@ on:
     branches: [ main ]
     types: [opened, synchronize]
 
+env:
+  SKIP: ${{ toJson(contains(join(github.event.commits.*.message), 'skip')) }}
+
 jobs:
   test:
     runs-on: ubuntu-20.04
@@ -46,16 +49,9 @@ jobs:
   deploy:
     needs: [test, playwright]
     if: ${{ github.event_name == 'push' }}
+    if: ${{ env.SKIP == 'false' }}
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v4
-      - name: github context
-        env:
-          COMMIT_MESSAGES: ${{ toJson(join(github.event.commits.*.message)) }}
-          SKIP: ${{ toJson(contains(join(github.event.commits.*.message), 'skip')) }}
-        run: | 
-          echo "$COMMIT_MESSAGES" "$SKIP"
-
       - name: Deploy
         uses: JorgeLNJunior/render-deploy@v1.4.5
         with:
@@ -65,6 +61,7 @@ jobs:
   tag_release:
     needs: [deploy]
     if: ${{ github.event_name == 'push' }}
+    if: ${{ env.SKIP == 'false' }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
