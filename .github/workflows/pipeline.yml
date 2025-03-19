@@ -53,8 +53,8 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ toJson(join(github.event.commits.*.message)) }}
           SKIP: ${{ toJson(contains(join(github.event.commits.*.message), 'skip')) }}
-        run: echo "$COMMIT_MESSAGES"
-        run: echo "$SKIP"
+        run: | 
+          echo "$COMMIT_MESSAGES" "$SKIP"
 
       - name: Deploy
         uses: JorgeLNJunior/render-deploy@v1.4.5
