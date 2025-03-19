@@ -7,9 +7,6 @@ on:
     branches: [ main ]
     types: [opened, synchronize]
 
-env:
-  SKIP: ${{ toJson(contains(join(github.event.commits.*.message), 'skip')) }}
-
 jobs:
   test:
     runs-on: ubuntu-20.04
@@ -48,6 +45,8 @@ jobs:
         retention-days: 30
   deploy:
     needs: [test, playwright]
+    env:
+      SKIP: ${{ toJson(contains(join(github.event.commits.*.message), 'skip')) }}
     if: ${{ (github.event_name == 'push') && (env.SKIP == 'false') }}
     runs-on: ubuntu-20.04
     steps:
@@ -59,6 +58,8 @@ jobs:
           wait_deploy: true
   tag_release:
     needs: [deploy]
+    env:
+      SKIP: ${{ toJson(contains(join(github.event.commits.*.message), 'skip')) }}
     if: ${{ (github.event_name == 'push') && (env.SKIP == 'false') }}
     runs-on: ubuntu-20.04
     steps:
