@@ -44,19 +44,20 @@ jobs:
           wait_deploy: true
 
       - name: Deploy Success
-        uses: rjstone/discord-webhook-notify@v1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@0.3.2
         if: success()
         with:
-          severity: info
-          details: Deploy Succeeded!
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+
       - name: Deploy Failure
-        uses: rjstone/discord-webhook-notify@v1
-        if: failure()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@0.3.2
+        if: failiure()
         with:
-          severity: error
-          details: Deploy Failed!
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} failed to deploy.'
 
   tag_release:
     needs: [pipeline]
