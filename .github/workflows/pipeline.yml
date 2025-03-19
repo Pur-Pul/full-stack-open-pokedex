@@ -53,3 +53,13 @@ jobs:
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
           api_key: ${{ secrets.RENDER_API_KEY }}
           wait_deploy: true
+  tag_release:
+    needs: [deploy]
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-20.04
+    steps:
+      name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.64.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEFAULT_BUMP: patch
