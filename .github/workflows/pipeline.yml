@@ -45,7 +45,7 @@ jobs:
         retention-days: 30
   deploy:
     needs: [test, playwright]
-    if: ${{ (github.event_name == 'push') && (toJson(contains(join(github.event.commits.*.message), 'skip')) == 'false') }}
+    if: ${{ (github.event_name == 'push') && (toJson(contains(join(github.event.commits.*.message), '#skip')) == 'false') }}
     runs-on: ubuntu-20.04
     steps:
       - name: Deploy
@@ -56,7 +56,7 @@ jobs:
           wait_deploy: true
   tag_release:
     needs: [deploy]
-    if: ${{ (github.event_name == 'push') && (toJson(contains(join(github.event.commits.*.message), 'skip')) == 'false') }}
+    if: ${{ (github.event_name == 'push') && (toJson(contains(join(github.event.commits.*.message), '#skip')) == 'false') }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
