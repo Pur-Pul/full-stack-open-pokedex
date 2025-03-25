@@ -17,3 +17,5 @@ Start by running `npm install` inside the project folder
 ## Production Build
 
 The production build is deployed at: https://full-stack-open-pokedex-p6qw.onrender.com
+
+parts 11.20 - 21 are at https://github.com/Pur-Pul/fullstack-11.20
